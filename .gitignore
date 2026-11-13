@@ -1,0 +1,17 @@
+# Data folders (too large for GitHub)
+data/
+*.zip
+*.parquet
+*.csv
+*.json
+
+# Virtual Environments
+.venv/
+citibike_venv/
+__pycache__/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store

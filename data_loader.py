@@ -3,7 +3,7 @@ import json
 import os
 
 def load_and_prepare_data(data_dir):
-    """Loads the parquet file, cleans the JSON, and merges them."""
+    """Goal 1: Loads the parquet file, cleans the JSON, and merges them."""
     print("Loading hourly panel...")
     df = pd.read_parquet(os.path.join(data_dir, "hourly_panel.parquet"))
     
@@ -27,5 +27,4 @@ def load_and_prepare_data(data_dir):
     df = df.merge(stations_df, on='station_id', how='left')
     
     print(f"Data loaded. Missing capacity: {df['capacity'].isna().mean() * 100:.2f}%")
-    
     return df, stations_df

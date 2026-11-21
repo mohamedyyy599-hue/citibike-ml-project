@@ -2,6 +2,8 @@ import pandas as pd
 from pathlib import Path
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_absolute_error, root_mean_squared_error
+import lightgbm as lgb
+import joblib 
 
 
 def load_data():
@@ -92,6 +94,19 @@ def train_baseline_model(X_train, y_train, X_val, y_val):
     return model
 
 
+def train_lightgbm_model(X_train, y_train, X_val, y_val):
+    model = lgb.LGBMRegressor(n_estimators=100, learning_rate=0.1, random_state=42)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_val)
+    mae = mean_absolute_error(y_true=y_val, y_pred=y_pred)
+    rmse = root_mean_squared_error(y_true=y_val, y_pred=y_pred)
+    print(f"LightGBM MAE: {mae}")
+    print(f"LightGBM RMSE: {rmse}")
+    importances = pd.DataFrame({'feature': X_train.columns, 'importance': model.feature_importances_})
+    print(importances.sort_values(by='importance', ascending=False).head(5))        
+    return model
+
+
 
 
 
@@ -108,5 +123,13 @@ if __name__ == "__main__":
     # 3. Train Baseline
     print("Training Baseline Model (Decision Tree)...")
     baseline_model = train_baseline_model(X_train, y_train, X_val, y_val)
-    
-    
+    # 4. Train LightGBM
+    print("\nTraining LightGBM Model...")
+    lgbm_model = train_lightgbm_model(X_train, y_train, X_val, y_val)
+
+    y_pred = lgbm_model.predict(X_test)
+    mae = mean_absolute_error(y_pred=y_pred, y_true=y_test)
+    rmse = root_mean_squared_error(y_pred=y_pred, y_true=y_test)
+    print(f"mae_test: {mae}")
+    print(f"rmse_test: {rmse}")
+    joblib.dump(lgbm_model, "models/small/lgbm_regressor.pkl")

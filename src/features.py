@@ -89,7 +89,7 @@ def create_targets(df):
     
     df = df.sort_values(['station_id', 'hour']).reset_index(drop=True)
     grouped = df.groupby('station_id')
-    
+     
     # 2. Shift backwards to create future targets
     df['target_departures_2h'] = grouped['departures'].shift(-2)
     df['target_departures_6h'] = grouped['departures'].shift(-6)
